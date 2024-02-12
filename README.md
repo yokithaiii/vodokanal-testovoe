@@ -30,6 +30,10 @@
   Выполнить миграции:
 
     docker compose exec backend php artisan migrate
+    
+  Выполнить команду импорта данных из .csv файлов:
+
+    docker compose exec backend php artisan import:data
 
 ## Vue.js
 
