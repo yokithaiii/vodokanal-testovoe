@@ -35,6 +35,3 @@ Route::apiResources([
     'materials' => MaterialController::class,
     'course_materials' => CourseMaterialController::class,
 ]);
-
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
