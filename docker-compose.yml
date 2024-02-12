@@ -1,0 +1,61 @@
+version: '3'
+services:
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+      - ./docker/backend/php.ini:/usr/local/etc/php/php.ini
+    container_name: 'backend'
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/frontend/Dockerfile
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/frontend
+    volumes:
+      - ./frontend:/var/www/frontend
+    container_name: 'frontend'
+
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+    volumes:
+      - ./backend:/var/www/backend
+      - ./frontend:/var/www/frontend
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    depends_on:
+      - backend
+      - frontend
+    container_name: 'nginx'
+
+  db:
+    image: mysql:5.7.22
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
+    environment:
+      MYSQL_DATABASE: vodokanal-testovoe
+      MYSQL_ROOT_PASSWORD: 'root'
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+    container_name: 'database'
+
+volumes:
+  dbdata:
+    driver: local
