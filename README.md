@@ -35,8 +35,8 @@
 
   Установить зависимости:
 
-    npm install
+    docker compose exec frontend npm install
 
   Собрать приложение:
 
-    npm run build
+    docker compose exec frontend npm run build
